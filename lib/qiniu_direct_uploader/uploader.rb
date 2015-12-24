@@ -60,6 +60,7 @@ module QiniuDirectUploader
       fields_array.push '"exif": $(exif)'
       fields_array.push '"endUser": $(endUser)'
       fields_array.push '"key": $(key)'
+      fields_array.push '"bucket":$(bucket)'
 
       custom_fields_array = []
       @options[:custom_fields].each do |k,v|
@@ -73,14 +74,14 @@ module QiniuDirectUploader
     end
 
     def token
-      put_policy = Qiniu::Auth::PutPolicy.new( @options[:bucket], @options[:key], @options[:expires_in], nil )
+      put_policy = Qiniu::Auth::PutPolicy.new( @options[:bucket], key_or_tpl(@options[:key]), @options[:expires_in], nil )
       put_policy.return_body = return_body
       put_policy.save_key = save_key
       put_policy.end_user = @options[:customer] if @options[:customer]
 
       Qiniu::Auth.generate_uptoken(put_policy)
     end
-
+    
     private
 
     def default_upload_url
@@ -89,6 +90,10 @@ module QiniuDirectUploader
       else
         "http://up.qiniu.com"
       end
+    end
+
+    def key_or_tpl(key)   # to support key definition with javascript template: uploads_{unique_id}_{timestamp}
+      key =~ /\{.+\}/ ? nil : key
     end
   end
 end
