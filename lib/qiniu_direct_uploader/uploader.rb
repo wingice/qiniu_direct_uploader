@@ -23,6 +23,7 @@ module QiniuDirectUploader
         data: {
           callback_url:     @options[:callback_url],
           callback_method:  @options[:callback_method],
+          callback_param:   @options[:callback_param],
           submit_button_id: @options[:submit_button_id],
           drop_paste_zone_id: @options[:drop_paste_zone_id],
           progress_bar_id:  @options[:progress_bar_id]
